@@ -160,7 +160,7 @@ but instead sets
 ```    
  An optional integer value telling the plugin how many seconds a token/refresh token pair is valid for, and can be used to generate a new access token. Default value is 2 weeks. Set to 0 to keep the token/refresh token pair valid indefinitely.
  
-We do not have a renew token so after 2 hours we need to use the same client_id and client_auth values as before to request a new token, as described step 3.
+We do not have a renew token so after 2 hours we need to use the same client_id and client_secret values as before to request a new token, as described step 3.
    
 
 ## JWT
