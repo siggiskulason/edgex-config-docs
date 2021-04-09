@@ -136,7 +136,11 @@ curl -sX GET http://localhost:8001/oauth2_tokens/ | jq
     },
 ```
 
+The resulting token can then be used to access EdgeXFoundry via Kong:
 
+```
+curl -k -X GET https://localhost:8443/coredata/api/v1/ping? -H "Authorization: Bearer Hb1JtlNfGB5wAi3Wiz7xwF91heWA0hEI"
+```
 
 
 
