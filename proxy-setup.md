@@ -43,7 +43,7 @@ $ curl -X POST http://localhost:8001/plugins/ \
 
 This is a required step before OAuth2 can be used and is why KongAuth.Name must be set to the correct value before EdgeXFoundry starts up.
 
-### Step 2 - Creating a user
+### Step 2 - Creating a user and an OAuth application
 
 In order to use the plugin, you first need to [create a consumer](https://docs.konghq.com/hub/kong-inc/oauth2/#create-a-consumer) to associate one or more credentials to. This is done with
 
@@ -58,10 +58,7 @@ curl -X POST http://localhost:8001/consumers/ \
     --data "username=user123" 
 ```
 
-
-### Step 3 - Creating an OAuth application
-
-the proxy adduser command also [creates an OAuth application](https://docs.konghq.com/hub/kong-inc/oauth2/#create-an-application) by making the following HTTP request
+The proxy adduser command also [creates an OAuth application](https://docs.konghq.com/hub/kong-inc/oauth2/#create-an-application) by making the following HTTP request
 
 ```
 curl -X POST http://kong:8001/consumers/user123/oauth2 \
@@ -95,7 +92,7 @@ curl -X POST "http://localhost:8001/consumers/user123/oauth2" -d "name=www.edgex
 ```
 
 
-### Step 4 - Create token
+### Step 3 - Get token
 
 Once the user (consumer) and application have been set up, the final step is to get the token.
 
