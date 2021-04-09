@@ -11,10 +11,11 @@ TokenTTL = 0
 Resource = "coredata"
 OutputPath = "accessToken.json"
 ```
-
-If this is set to oauth2, then the proxy server (Kong) will be configured to use the [OAuth 2.0 plugin](https://docs.konghq.com/hub/kong-inc/oauth2/)
+*Name* can be either oauth2 or jwt. Based on that setting, Kong will be initialized to use either of the two authentication methods.
 
 ## OAuth 2.0
+
+OAuth2 is implemented in Kong using the [OAuth 2.0 plugin](https://docs.konghq.com/hub/kong-inc/oauth2/)
 
 ### Step 1 - Enabling the plugin globally
 
