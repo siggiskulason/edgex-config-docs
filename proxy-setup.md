@@ -45,9 +45,7 @@ This is a required step before OAuth2 can be used and is why KongAuth.Name must 
 
 ### Step 2 - Creating a user
 
-In order to use the plugin, you first need to [create a consumer](https://docs.konghq.com/hub/kong-inc/oauth2/#create-a-consumer) to associate one or more credentials to. The Consumer represents a developer using the upstream service.
-
-done with
+In order to use the plugin, you first need to [create a consumer](https://docs.konghq.com/hub/kong-inc/oauth2/#create-a-consumer) to associate one or more credentials to. This is done with
 
 ```
 $ edgexfoundry.secrets-config proxy adduser --token-type oauth2 --user user123
