@@ -141,6 +141,27 @@ The resulting token can then be used to access EdgeXFoundry via Kong:
 curl -k -X GET https://localhost:8443/coredata/api/v1/ping? -H "Authorization: Bearer Hb1JtlNfGB5wAi3Wiz7xwF91heWA0hEI"
 ```
 
+### Issues:
+
+- The generated tokens are set to expire in 7200 seconds / 2 hours, which is the default value. This is because the plugin initialiation in step 1 does not set 
+
+```
+   --data "config.token_expiration=7200" \
+```
+
+Default value: 7200	
+An optional integer value telling the plugin how many seconds a token should last, after which the client will need to refresh the token. Set to 0 to disable the expiration.
+
+
+but instead sets
+
+```
+--data "config.refresh_token_ttl=0" 
+```    
+ An optional integer value telling the plugin how many seconds a token/refresh token pair is valid for, and can be used to generate a new access token. Default value is 2 weeks. Set to 0 to keep the token/refresh token pair valid indefinitely.
+ 
+  
+   
 
 ## JWT
 
