@@ -144,6 +144,12 @@ curl -k -X GET https://localhost:8443/coredata/api/v1/ping? -H "Authorization: B
 ```
 
 
+## JWT
+
+The [JWT Kong plugin](https://docs.konghq.com/hub/kong-inc/jwt/) implements JWT support in Kong. 
+
+...
+
 
 
 
