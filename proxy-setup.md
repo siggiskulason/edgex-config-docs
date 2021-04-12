@@ -193,6 +193,7 @@ $ openssl ec -in private.pem -pubout -out public.pem
 
 # create ID
 $ edgexfoundry.secrets-config proxy adduser --token-type jwt --user user01 --algorithm ES256 --public_key public.pem 
+F951PgcbemcWsBw9WsaF6eTTfsh29GeK
 ```
 
 which does
@@ -208,10 +209,8 @@ curl -X POST http://localhost:8001/consumers/user123/jwt \
 ```
 The secrets-config utility returns the key value, which is a unique string identifying the credential. 
 
-```
-"key": "3gB3f5otz745vtV3jXqEXd5l0K4d1OVO",
-```
-
+It's also possible to later get this key value using
+curl -X GET http://localhost:8001/consumers/user05/jwt | jq
 
 ### Step 3 - Get token
 
@@ -237,8 +236,10 @@ header='{
 JWT_HEADER=`echo -n $header | base64 | sed s/\+/-/ | sed -E s/=+$//`
 TTL=$((EPOCHSECONDS+3600))
 
+USER_KEY="F951PgcbemcWsBw9WsaF6eTTfsh29GeK"
+
 payload='{
-    "iss":"3gB3f5otz745vtV3jXqEXd5l0K4d1OVO", 
+    "iss":"'$USER_KEY'",
     "iat":'$EPOCHSECONDS', 
     "nbf":'$EPOCHSECONDS',
     "exp":'$TTL' 
@@ -249,7 +250,7 @@ JWT_SIGNATURE=`echo -n "$JWT_HEADER.$JWT_PAYLOAD" | openssl dgst -sha256 -binary
 TOKEN=$JWT_HEADER.$JWT_PAYLOAD.$JWT_SIGNATURE
 
 ```
-https://jwt.io/#debugger-io
+once you have the token, you can validate it on [jwt.io](https://jwt.io/#debugger-io)
 
 
 ### Step 3 - Test token
@@ -261,8 +262,6 @@ Using the JWT token from step 3, execute an EdgeX command:
 # ping
 curl -k -X GET https://localhost:8443/coredata/api/v1/ping? -H "Authorization: Bearer $TOKEN"
 
-# get public key
-curl -X GET http://localhost:8001/consumers/user01/jwt
 
 ```
 
