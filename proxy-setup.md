@@ -186,13 +186,9 @@ In order to use the plugin, you first need to [create a consumer](https://docs.k
 You need to provide the following
 - The username
 - The public key
-- (optionally) ID. This is a unique string identifying the credential. It will be required in the next step to create the JWT token. If you don't specify it, then the JWT Kong plugin will generate one. It's also possible to later get this key value using
+- (optionally) ID. This is a unique string identifying the credential. It will be required in the next step to create the JWT token. If you don't specify it, then the JWT Kong plugin will generate one. 
 
-```
-curl -X GET http://localhost:8001/consumers/user05/jwt | jq
-```
-
-Adding a is done with
+Adding a user is done with
 
 ```
 # Create private key:
@@ -221,15 +217,23 @@ curl -X POST http://localhost:8001/consumers/user123/jwt \
 
 ### Step 3 - Get token
 
-With JWT, the token is created without needing a roundtrip back to Kong. It can be generated off-box, or using the built-in secrets-config command.
+To generate a token, you need two things
+- The private key matching the public key used to create the user in Step 2
+- The unique ID for the user. If you specified a value for ID in Step 2, then use that. Otherwise use the one printed out when the user was added. Alternatively you can get the ID value by doing
 
-To build using secrets-config, do:
+```
+curl -X GET http://localhost:8001/consumers/user05/jwt | jq
+```
+
+The token is created without needing a connection to Kong or the EdgeX installation and can therefore be generated on a different computer.
+
+secrets-config provides a method to create a token for you:
 
 ```
 $ edgexfoundry.secrets-config proxy jwt --algorithm ES256 --private_key private.pem --id FUYBhoYpq530R1HtDP5cukdNq5ccnvbY --expiration=1h
 ```
 
-To do this in a bash shell do the following - which can even be done on a different computer as it doesn't require access to EdgeX or Kong.
+However, you can also do this with different tools. To create a token using a bash script do the following.
 
 ```
 # set alg to RS256 or ES256
