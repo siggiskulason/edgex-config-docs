@@ -165,10 +165,24 @@ We do not have a renew token so after 2 hours we need to use the same client_id 
 
 ## JWT
 
-The [JWT Kong plugin](https://docs.konghq.com/hub/kong-inc/jwt/) implements JWT support in Kong. 
+The  implements JWT support in Kong. 
 
-The process used to set up Kong with a JWT token is as follows:
+### Step 1 - Enabling the plugin globally
 
+As per [JWT Kong plugin documentation](https://docs.konghq.com/hub/kong-inc/jwt/), security-proxy-setup will enable the plugin globally
+
+This is done in [service.go](https://github.com/edgexfoundry/edgex-go/blob/4a93de6e2e8f65a45d7e1065c78fcf8c18a7addf/internal/security/proxy/service.go#L447) and that effectively does the same as
+
+```
+$ curl -X POST http://localhost:8001/plugins/ --data "name=jwt" 
+```
+
+This is a required step before JWT can be used and is why KongAuth.Name must be set to the correct value before EdgeXFoundry starts up.
+
+
+### Step 2 - Creating a user 
+
+In order to use the plugin, you first need to [create a consumer](https://docs.konghq.com/hub/kong-inc/jwt/#create-a-consumer) to associate one or more credentials to. This is done with
 
 ```
 # Create private key:
@@ -179,6 +193,32 @@ $ openssl ec -in private.pem -pubout -out public.pem
 
 # create ID
 $ edgexfoundry.secrets-config proxy adduser --token-type jwt --user user01 --algorithm ES256 --public_key public.pem 
+```
+
+which does
+
+```
+curl -X POST http://localhost:8001/consumers/ \
+    --data "username=user123" 
+
+curl -X POST http://localhost:8001/consumers/{consumer}/jwt -H "Content-Type: application/x-www-form-urlencoded"
+HTTP/1.1 201 Created
+{
+    "algorithm":  RS256 or ES256 
+    "key": "a36c3049b36249a3c9f8891cb127243c",
+    "rsa_public_key": "a36c3049b36249a3c9f8891cb127243c",
+    "secret": "e71829c351aa4242c2719cbfbe671c09"
+}
+
+    
+```
+
+
+### Step 3 - Get token
+
+
+
+```
 
 Note the token output (yjSBLdSeVhYcPzHeCtuvO4Nay8eSZVaO) and use that as the argument in the next step
 
