@@ -229,7 +229,7 @@ To build using secrets-config, do:
 $ edgexfoundry.secrets-config proxy jwt --algorithm ES256 --private_key private.pem --id FUYBhoYpq530R1HtDP5cukdNq5ccnvbY --expiration=1h
 ```
 
-To do this in a bash shell, do
+To do this in a bash shell do the following - which can even be done on a different computer as it doesn't require access to EdgeX or Kong.
 
 ```
 # set alg to RS256 or ES256
