@@ -165,7 +165,6 @@ We do not have a renew token so after 2 hours we need to use the same client_id 
 
 ## JWT
 
-The  implements JWT support in Kong. 
 
 ### Step 1 - Enabling the plugin globally
 
