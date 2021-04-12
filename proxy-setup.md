@@ -167,7 +167,31 @@ We do not have a renew token so after 2 hours we need to use the same client_id 
 
 The [JWT Kong plugin](https://docs.konghq.com/hub/kong-inc/jwt/) implements JWT support in Kong. 
 
-...
+The process used to set up Kong with a JWT token is as follows:
+
+
+```
+# Create private key:
+$ openssl ecparam -genkey -name prime256v1 -noout -out private.pem
+
+# Create public key:
+$ openssl ec -in private.pem -pubout -out public.pem
+
+# create ID
+$ edgexfoundry.secrets-config proxy adduser --token-type jwt --user user01 --algorithm ES256 --public_key public.pem 
+
+Note the token output (yjSBLdSeVhYcPzHeCtuvO4Nay8eSZVaO) and use that as the argument in the next step
+
+# create JWT token using ID
+$ edgexfoundry.secrets-config proxy jwt --algorithm ES256 --private_key private.pem --id yjSBLdSeVhYcPzHeCtuvO4Nay8eSZVaO
+
+# ping
+curl -k -X GET https://localhost:8443/coredata/api/v1/ping? -H "Authorization: Bearer eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTcwMjk3MzMsImlhdCI6MTYxNzAyNjEzMywiaXNzIjoieWpTQkxkU2VWaFljUHpIZUN0dXZPNE5heThlU1pWYU8iLCJuYmYiOjE2MTcwMjYxMzN9.rwSGBBGj7oPuZUS7Ekjq60LfWD0vViRl-YpG5oIA8HMxvXl2Cak_Nl1iQSOJ7YaDQ0lor85dzBczGGMqkBHe6g"
+
+# get public key
+curl -X GET http://localhost:8001/consumers/user01/jwt
+
+```
 
 
 
