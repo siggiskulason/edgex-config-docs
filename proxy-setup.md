@@ -201,32 +201,65 @@ which does
 curl -X POST http://localhost:8001/consumers/ \
     --data "username=user123" 
 
-curl -X POST http://localhost:8001/consumers/{consumer}/jwt -H "Content-Type: application/x-www-form-urlencoded"
-HTTP/1.1 201 Created
-{
-    "algorithm":  RS256 or ES256 
-    "key": "a36c3049b36249a3c9f8891cb127243c",
-    "rsa_public_key": "a36c3049b36249a3c9f8891cb127243c",
-    "secret": "e71829c351aa4242c2719cbfbe671c09"
-}
+# use RS256 or ES256
+curl -X POST http://localhost:8001/consumers/user123/jwt \
+    --data "algorithm=ES256" \
+    -- data "rsa_public_key=a36c3049b36249a3c9f8891cb127243c"    
+```
+The secrets-config utility returns the key value, which is a unique string identifying the credential. 
 
-    
+```
+"key": "3gB3f5otz745vtV3jXqEXd5l0K4d1OVO",
 ```
 
 
 ### Step 3 - Get token
 
+With JWT, the token is created without needing a roundtrip back to Kong. It can be generated off-box, or using the built-in secrets-config command.
 
+To build using secrets-config, do:
+
+```
+$ edgexfoundry.secrets-config proxy jwt --algorithm ES256 --private_key private.pem --id FUYBhoYpq530R1HtDP5cukdNq5ccnvbY --expiration=1h
+```
+
+To do this in a bash shell, do
+
+```
+# set alg to RS256 or ES256
+# get the encoded header
+
+header='{
+    "alg": "ES256",
+    "typ": "JWT"
+}'
+
+JWT_HEADER=`echo -n $header | base64 | sed s/\+/-/ | sed -E s/=+$//`
+TTL=$((EPOCHSECONDS+3600))
+
+payload='{
+    "iss":"3gB3f5otz745vtV3jXqEXd5l0K4d1OVO", 
+    "iat":'$EPOCHSECONDS', 
+    "nbf":'$EPOCHSECONDS',
+    "exp":'$TTL' 
+}'
+
+JWT_PAYLOAD=`echo -n $payload | base64 | sed s/\+/-/ | sed -E s/=+$//`
+JWT_SIGNATURE=`echo -n "$JWT_HEADER.$JWT_PAYLOAD" | openssl dgst -sha256 -binary -sign private.pem  | openssl enc -base64 | tr -d '\n=' | tr -- '+/' '-_'`
+TOKEN=$JWT_HEADER.$JWT_PAYLOAD.$JWT_SIGNATURE
+
+```
+https://jwt.io/#debugger-io
+
+
+### Step 3 - Test token
+
+Using the JWT token from step 3, execute an EdgeX command:
 
 ```
 
-Note the token output (yjSBLdSeVhYcPzHeCtuvO4Nay8eSZVaO) and use that as the argument in the next step
-
-# create JWT token using ID
-$ edgexfoundry.secrets-config proxy jwt --algorithm ES256 --private_key private.pem --id yjSBLdSeVhYcPzHeCtuvO4Nay8eSZVaO
-
 # ping
-curl -k -X GET https://localhost:8443/coredata/api/v1/ping? -H "Authorization: Bearer eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTcwMjk3MzMsImlhdCI6MTYxNzAyNjEzMywiaXNzIjoieWpTQkxkU2VWaFljUHpIZUN0dXZPNE5heThlU1pWYU8iLCJuYmYiOjE2MTcwMjYxMzN9.rwSGBBGj7oPuZUS7Ekjq60LfWD0vViRl-YpG5oIA8HMxvXl2Cak_Nl1iQSOJ7YaDQ0lor85dzBczGGMqkBHe6g"
+curl -k -X GET https://localhost:8443/coredata/api/v1/ping? -H "Authorization: Bearer $TOKEN"
 
 # get public key
 curl -X GET http://localhost:8001/consumers/user01/jwt
