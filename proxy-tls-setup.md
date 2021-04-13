@@ -1,6 +1,6 @@
 # EdgeXFoundry Proxy - TLS Setup
 
-## generate cert
+## generate the certificate using openssl or the edgeca utility
 
 ```
 sudo snap install edgeca
@@ -8,7 +8,7 @@ edgeca gencsr --cn localhost --csr localhost.csr --key localhost.csrkey
 edgeca gencert -o localhost.cert -i localhost.csr -k localhost.privatekey
 ```
 
-## install cert 
+## install certificate
 ```
 edgexfoundry.secrets-config proxy tls -incert localhost.cert --inkey localhost.privatekey
 ```
