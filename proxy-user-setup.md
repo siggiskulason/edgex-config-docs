@@ -1,4 +1,4 @@
-# EdgeXFoundry Proxy setup
+# EdgeXFoundry Proxy User Setup
 
 Kong is initalized using the security-proxy-setup oneshot daemon.
 
