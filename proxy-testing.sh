@@ -35,4 +35,13 @@ JWT_PAYLOAD=`echo -n $payload | openssl base64 -e -A | sed s/\+/-/ | sed -E s/=+
 JWT_SIGNATURE=`echo -n "$JWT_HEADER.$JWT_PAYLOAD" | openssl dgst -sha256 -binary -sign private.pem  | openssl asn1parse -inform DER  -offset 2 | grep -o "[0-9A-F]\+$" | tr -d '\n' | xxd -r -p | base64 -w0 | tr -d '=' | tr '+/' '-_'`
 TOKEN=$JWT_HEADER.$JWT_PAYLOAD.$JWT_SIGNATURE
 
-curl -k -X GET https://localhost:8443/coredata/api/v1/ping? -H "Authorization: Bearer $TOKEN"
+
+sudo snap install edgeca
+edgeca gencsr --cn localhost --csr localhost.csr --key localhost.csrkey
+edgeca gencert -o localhost.cert -i localhost.csr -k localhost.privatekey
+edgexfoundry.secrets-config proxy tls -incert localhost.cert --inkey localhost.privatekey
+
+echo "TEST RESULT:"
+
+curl --cacert /var/snap/edgeca/current/CA.pem  -X GET https://localhost:8443/coredata/api/v1/ping? -H "Authorization: Bearer $TOKEN"
+echo
