@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 # Create private key:
 openssl ecparam -genkey -name prime256v1 -noout -out private.pem
@@ -37,20 +36,3 @@ JWT_SIGNATURE=`echo -n "$JWT_HEADER.$JWT_PAYLOAD" | openssl dgst -sha256 -binary
 TOKEN=$JWT_HEADER.$JWT_PAYLOAD.$JWT_SIGNATURE
 
 curl -k -X GET https://localhost:8443/coredata/api/v1/ping? -H "Authorization: Bearer $TOKEN"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```
