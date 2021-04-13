@@ -1,6 +1,6 @@
-Test script for the EdgeXFoundry Proxy setup
+#!/usr/bin/env bash
+set -euo pipefail
 
-```
 # Create private key:
 openssl ecparam -genkey -name prime256v1 -noout -out private.pem
 
