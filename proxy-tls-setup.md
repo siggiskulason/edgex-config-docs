@@ -21,4 +21,7 @@ openssl s_client -CAfile /var/snap/edgeca/current/CA.pem -servername localhost -
 ## connect using curl
 ```
 curl -v --cacert /var/snap/edgeca/current/CA.pem -X GET https://localhost:8443/coredata/api/v1/ping?
+#or
+curl -v --cacert /var/snap/edgeca/current/CA.pem  -X GET https://localhost:8443/coredata/api/v1/ping? -H "Authorization: Bearer $TOKEN"
+
 ```
