@@ -206,10 +206,10 @@ The secrets-config command is essentially doing the equivalent of:
 
 ```
 curl -X POST http://localhost:8001/consumers/ \
-    --data "username=user123" 
+    --data "username=user01" 
 
 # use RS256 or ES256
-curl -X POST http://localhost:8001/consumers/user123/jwt \
+curl -X POST http://localhost:8001/consumers/user01/jwt \
     --data "algorithm=ES256" \
     -- data "rsa_public_key=a36c3049b36249a3c9f8891cb127243c"    
 ```
@@ -222,7 +222,7 @@ To generate a token, you need two things
 - The unique ID for the user. If you specified a value for ID in Step 2, then use that. Otherwise use the one printed out when the user was added. Alternatively you can get the ID value by doing
 
 ```
-curl -X GET http://localhost:8001/consumers/user05/jwt | jq
+curl -X GET http://localhost:8001/consumers/user01/jwt | jq
 ```
 
 The token is created without needing a connection to Kong or the EdgeX installation and can therefore be generated on a different computer.
@@ -230,7 +230,7 @@ The token is created without needing a connection to Kong or the EdgeX installat
 secrets-config provides a method to create a token for you:
 
 ```
-$ edgexfoundry.secrets-config proxy jwt --algorithm ES256 --private_key private.pem --id FUYBhoYpq530R1HtDP5cukdNq5ccnvbY --expiration=1h
+$ edgexfoundry.secrets-config proxy jwt --algorithm ES256 --private_key private.pem --id USER_ID_KEY_VALUE --expiration=1h
 ```
 
 However, you can also do this with different tools. To create a token using a bash script do the following.
